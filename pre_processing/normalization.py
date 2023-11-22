@@ -3,8 +3,6 @@ import re
 import os
 from collections import Counter
 
-
-# 加载停用词
 with open("pre_processing/stop_words.utf8", encoding='utf-8') as f:
     stopword_list = f.read().splitlines()
 

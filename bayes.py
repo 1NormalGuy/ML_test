@@ -5,7 +5,7 @@ import math
 import numpy as np  
 from prettytable import PrettyTable  
 
-# 获取类别ID
+# 获取类别名
 def get_class_id(path):
     Dic = {}  
     i = 0  
@@ -88,7 +88,7 @@ def naive_bayes_predict(d, prior, condprob, Dic, V):
 
 # 使用朴素贝叶斯模型进行测试
 def naive_bayes_test(dataChoice, lamb):
-    print('\r' + '******************** Naive Bayes ********************')  
+    print('\r' + '==================== Naive Bayes ====================')  
     naive_bayes_train(dataChoice, lamb)  
     prior = nm.value_to_float(nm.txt_to_dic(dataChoice + '/bayes/prior.txt'))  
     condprob = (np.load(dataChoice + '/bayes/condprob.npy', allow_pickle=True)).tolist()  
