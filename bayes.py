@@ -37,8 +37,8 @@ def class_to_txt(dataChoice):
 def prior_to_txt(dataChoice, Dic, N):
     pathLoadChoice = dataChoice + '/bayes/v_class'  
     pathStoreChoice = dataChoice + '/bayes/prior.txt'  
-    prior = {}  # 创建一个空字典用于存储先验概率
-    for c in Dic:  # 遍历所有类别
+    prior = {}  
+    for c in Dic:  
         Nc = nm.get_sum_words(pathLoadChoice + '/' + Dic[c] + '.txt', 0)  
         prior[c] = Nc/N 
     nm.dic_to_txt(prior, pathStoreChoice)  
@@ -83,8 +83,8 @@ def naive_bayes_predict(d, prior, condprob, Dic, V):
         for t in V: 
             if t in vd.keys(): 
                 score[c] += math.log(condprob[int(t)][c])  
-    max_index = score.index(max(score))  
-    return max_index 
+    maxIndex = score.index(max(score))  
+    return maxIndex 
 
 # 使用朴素贝叶斯模型进行测试
 def naive_bayes_test(dataChoice, lamb):

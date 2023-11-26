@@ -3,7 +3,7 @@ from pre_processing import normalization as nm
 import os
 from prettytable import PrettyTable
 import math
-
+from tqdm import tqdm
 
 # 获取向量列表
 def get_list_of_vectors():
@@ -93,25 +93,26 @@ def perceptron_test(dataChoice, categories, max_iter, a):
     w, b, vAll = perceptron_train(dataChoice, categories, max_iter, a)  
     tp = tn = fp = fn = 0  
     classDic = {1: categories[0], -1: categories[1]}  
-    for cname in os.listdir(dataChoice + '/v_test'):
-        if cname == classDic[1]:
-            dir_path = os.path.join(dataChoice + '/v_test', cname)
-            for file in os.listdir(dir_path):
-                d = os.path.join(dir_path, file)  
-                result = perceptron_predict(w, b, get_d_array(d, vAll))  
-                if result == 1:
-                    tp += 1
-                else:
-                    fn += 1
-        else:
-            dir_path = os.path.join(dataChoice + '/v_test', cname)  
-            for file in os.listdir(dir_path):
-                d = os.path.join(dir_path, file) 
-                result = perceptron_predict(w, b, get_d_array(d, vAll))  
-                if result == -1:
-                    tn += 1
-                else:
-                    fp += 1
+    for iter in tqdm(range(max_iter), desc='Training progress'):
+        for cname in os.listdir(dataChoice + '/v_test'):
+            if cname == classDic[1]:
+                dir_path = os.path.join(dataChoice + '/v_test', cname)
+                for file in os.listdir(dir_path):
+                    d = os.path.join(dir_path, file)  
+                    result = perceptron_predict(w, b, get_d_array(d, vAll))  
+                    if result == 1:
+                        tp += 1
+                    else:
+                        fn += 1
+            else:
+                dir_path = os.path.join(dataChoice + '/v_test', cname)  
+                for file in os.listdir(dir_path):
+                    d = os.path.join(dir_path, file) 
+                    result = perceptron_predict(w, b, get_d_array(d, vAll))  
+                    if result == -1:
+                        tn += 1
+                    else:
+                        fp += 1
     print('\r')
     print('Iteration Times: ', max_iter)  
     print('Learning Rate: ', a)  

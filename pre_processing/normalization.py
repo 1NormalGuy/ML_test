@@ -4,11 +4,11 @@ import os
 from collections import Counter
 
 with open("pre_processing/stop_words.utf8", encoding='utf-8') as f:
-    stopword_list = f.read().splitlines()
+    stopwordList = f.read().splitlines()
 
 
-def get_list_of_text(filename):
-    with open(filename, encoding='gb18030', errors='ignore') as f:
+def get_list_of_text(fileName):
+    with open(fileName, encoding='gb18030', errors='ignore') as f:
         text = f.read().splitlines()
     return text
 
@@ -21,18 +21,16 @@ def tokenize_text(text):
 
 def remove_stopwords(text):
     tokens = tokenize_text(text)
-    filtered_tokens = [token for token in tokens if token not in stopword_list]
+    filtered_tokens = [token for token in tokens if token not in stopwordList]
     return filtered_tokens
 
 
 def tokenize_document(document):
-    tokenized_document = []
+    tokenizedDocument = []
     for line in document:
         line = remove_stopwords(line)
-        tokenized_document += line
-    # tokenized_document = sorted(set(tokenized_document), key=tokenized_document.index)
-    # print(tokenized_document)
-    return tokenized_document
+        tokenizedDocument += line
+    return tokenizedDocument
 
 
 def list_to_dic(list):
@@ -42,63 +40,60 @@ def list_to_dic(list):
     return dic
 
 
-def get_all_words(dir, words_list):
-    for filename in os.listdir(dir):
-        cur_path = dir + '/' + filename
-        if os.path.isdir(cur_path):
-            print('loading ' + cur_path + '...')
-            tmp = get_all_words(cur_path, words_list)
-            words_list += tmp
+def get_all_words(dir, wordsList):
+    for fileName in os.listdir(dir):
+        curPath = dir + '/' + fileName
+        if os.path.isdir(curPath):
+            print('loading ' + curPath + '...')
+            tmp = get_all_words(curPath, wordsList)
+            wordsList += tmp
         else:
-            doc = tokenize_document(get_list_of_text(cur_path))
-            words_list += doc
-    return words_list
+            doc = tokenize_document(get_list_of_text(curPath))
+            wordsList += doc
+    return wordsList
 
 
 def get_dictionary(dir):
-    words_list = []
-    for dirname in os.listdir(dir):
-        cur_path = dir + '/' + dirname
-        print('loading ' + cur_path + '...')
-        for filename in os.listdir(cur_path):
-            doc = tokenize_document(get_list_of_text(cur_path + '/' + filename))
-            words_list += doc
-    # words_list = get_all_words(dir, words_list)
-    dic_list = list(set(words_list))
+    wordsList = []
+    for dirName in os.listdir(dir):
+        curPath = dir + '/' + dirName
+        print('loading ' + curPath + '...')
+        for fileName in os.listdir(curPath):
+            doc = tokenize_document(get_list_of_text(curPath + '/' + fileName))
+            wordsList += doc
+    dic_list = list(set(wordsList))
     dic = list_to_dic(dic_list)
     print('Finished getting dictionary.')
     return dic
 
 
-def get_id(target_word, dic):
+def get_id(targetWord, dic):
     for id, word in dic.items():
-        if word == target_word:
-            word_id = id
+        if word == targetWord:
+            wordId = id
             break
-    return word_id
+    return wordId
 
 
 def sorted_vector(vec):
-    int_keys = []
+    intKeys = []
     for i in range(len(list(vec.keys()))):
-        int_keys.append(int(list(vec.keys())[i]))
-    sorted_keys = sorted(int_keys)
-    sorted_vec = {}
-    for i in sorted_keys:
-        sorted_vec[i] = vec[str(i)]
-    return sorted_vec
+        intKeys.append(int(list(vec.keys())[i]))
+    sortedKeys = sorted(intKeys)
+    sortedVec = {}
+    for i in sortedKeys:
+        sortedVec[i] = vec[str(i)]
+    return sortedVec
 
 
-# doc is name of document, dic_all is the dictionary of all training data
-# return a dictionary with frequency
 def get_sorted_vector(doc, dic_all):
     doc = tokenize_document(get_list_of_text(doc))
-    dic_doc = {}
+    dicDoc = {}
     for word in set(doc):
         if word in dic_all.values():
-            dic_doc[get_id(word, dic_all)] = doc.count(word)
-    dic_doc = sorted_vector(dic_doc)
-    return dic_doc
+            dicDoc[get_id(word, dic_all)] = doc.count(word)
+    dicDoc = sorted_vector(dicDoc)
+    return dicDoc
 
 
 def dic_to_txt(dic, path):
@@ -135,9 +130,6 @@ def value_to_float(dic):
         dic[key] = float(dic[key])
     return dic
 
-
-# O(n)=n^2
-# path should be a directory
 def merge_all_vec_in_sort(path):
     dic = Counter({})
     for vec in os.listdir(path):
@@ -147,7 +139,6 @@ def merge_all_vec_in_sort(path):
     return dic
 
 
-# path should be a directory
 def get_sum_words(path, n):
     if os.path.isfile(path):
         vec = txt_to_dic(path)
@@ -156,11 +147,11 @@ def get_sum_words(path, n):
         return n
     else:
         for file in os.listdir(path):
-            cur_path = os.path.join(path, file)
-            if os.path.isdir(cur_path):
-                n = get_sum_words(cur_path, n)
+            curPath = os.path.join(path, file)
+            if os.path.isdir(curPath):
+                n = get_sum_words(curPath, n)
             else:
-                vec = txt_to_dic(cur_path)
+                vec = txt_to_dic(curPath)
                 for freq in vec.values():
                     n += int(freq)
         return n
