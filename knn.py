@@ -3,6 +3,7 @@ from collections import Counter
 from pre_processing import normalization as nm
 import os
 from prettytable import PrettyTable
+from tqdm import tqdm
 
 
 def get_class_id(path):
@@ -85,7 +86,6 @@ def knn_predict(d_path, trainData, labels, C, p, k):
         sortedLabels.append(c)
     counter = Counter(sortedLabels)
     maxC = counter.most_common(1)[0][0]
-    print(C[maxC])
     return maxC
 
 
@@ -98,10 +98,9 @@ def knn_test(dataChoice, p, k):
     f = {}.fromkeys(range(len(C)), 0)
     pre = {}.fromkeys(range(len(C)), 0)
     printed=set()
-    for i in C:
+    for i in tqdm(C, desc='Test progress'):  
         if C[i] not in printed:
             print('Test', C[i], '...')
-            print('11111111111111')
             printed.add(C[i])
         curPath = dataChoice + '/v_test/' + C[i]
         for file in os.listdir(curPath):
@@ -123,3 +122,4 @@ def knn_test(dataChoice, p, k):
     print(print_prf_matrix(C, precision, recall, f1))
     print('Macro-F1: ', float(sum(f1.values())) / len(C) * 100, '%')
     return
+   

@@ -4,6 +4,7 @@ import os
 import math  
 import numpy as np  
 from prettytable import PrettyTable  
+from tqdm import tqdm
 
 # 获取类别名
 def get_class_id(path):
@@ -99,7 +100,7 @@ def naive_bayes_test(dataChoice, lamb):
     true = {}.fromkeys(range(len(Dic)), 0) 
     false = {}.fromkeys(range(len(Dic)), 0)  
     predict= {}.fromkeys(range(len(Dic)), 0)  
-    for i in Dic:  
+    for i in tqdm(Dic, desc='Test progress'):  # 使用tqdm显示进度条
         print(i+1,':','Test', Dic[i], '...')
         cur_path = dir + '/' + Dic[i]
         for file in os.listdir(cur_path):
